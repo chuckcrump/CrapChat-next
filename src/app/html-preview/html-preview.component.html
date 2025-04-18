@@ -1,0 +1,14 @@
+<div class="flex fixed h-screen w-screen items-center justify-center">
+  <div class="flex flex-col w-3/4 h-3/4 p-2 pb-4 px-4 rounded-3xl bg-[#202020]">
+    <h1 class="text-white font-semibold">Preview</h1>
+    <iframe
+      class="border-[1px] border-white bg-white h-full rounded-2xl"
+      #previewFrame
+      allowScriptAccess="sameorigin"
+      sandbox="allow-scripts"
+      title="Preview"
+      [attr.srcdoc]="safeContent"
+      frameborder="0"
+    ></iframe>
+  </div>
+</div>

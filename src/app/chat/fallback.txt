@@ -1,0 +1,73 @@
+<div class="flex h-screen overflow-hidden">
+  <app-side-bar class="w-60 flex-shrink-0" />
+  <div class="flex flex-col flex-grow p-2 w-full">
+    <div
+      id="chat-column"
+      class="flex-grow overflow-y-auto mb-6 w-full flex justify-center"
+    >
+      <div class="w-2/3">
+        <ng-template #noChats>
+          <div class="mt-20 flex flex-col items-center justify-center h-full">
+            <h1
+              class="text-3xl md:text-5xl font-medium bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-red-500"
+            >
+              Welcome Back Joe
+            </h1>
+            <p class="text-lg text-gray-500 dark:text-gray-400 mt-2">
+              Send your first message
+            </p>
+          </div>
+        </ng-template>
+        <div
+          class="flex flex-col w-full"
+          *ngIf="history().length; else noChats"
+        >
+          <div *ngFor="let chat of history(); let i = index">
+            <div #scrollTarget *ngIf="i === history().length - 1"></div>
+            <ng-template #user>
+              <div
+                class="flex ml-auto w-fit max-w-2/3 p-2 px-3 mt-4 rounded-full rounded-br-md bg-[#202020] text-white"
+              >
+                <p>{{ chat.content }}</p>
+              </div>
+            </ng-template>
+            <div
+              *ngIf="!chat.user; else user"
+              class="mt-4 bg-[#202020] p-2 rounded-xl rounded-bl-md text-white"
+            >
+              <p class="text-sm text-gray-400">{{ chat.role }}</p>
+              <div [innerHTML]="chat.html"></div>
+            </div>
+          </div>
+          <div
+            class="mt-4 bg-[#202020] p-2 rounded-xl rounded-bl-md text-white"
+            *ngIf="ollamaRes()"
+          >
+            <p class="text-sm text-gray-400">assistant</p>
+            <p [innerHTML]="htmlOllamaRes()"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center w-full">
+      <div
+        id="prompt-area"
+        class="flex items-center justify-center p-2 bg-[#202020] w-2/3 rounded-2xl z-20"
+      >
+        <textarea
+          class="p-2 h-16 rounded-xl outline-0 resize-none bg-transparent text-white w-full"
+          [(ngModel)]="prompt"
+          (keydown.enter)="chat($event)"
+          placeholder="Type your message..."
+        ></textarea>
+        <button
+          class="ml-2 px-4 py-2 rounded-xl bg-blue-500 text-white font-semibold"
+          (click)="chat($event)"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+    <div class="h-6 bg-[#171717]"></div>
+  </div>
+</div>
