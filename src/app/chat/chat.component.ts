@@ -133,6 +133,5 @@ export class ChatComponent {
     ]);
     this.htmlOllamaRes.set("");
     this.ollamaRes.set("");
-    console.log(this.history());
   }
 }
