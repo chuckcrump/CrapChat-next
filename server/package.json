@@ -1,0 +1,20 @@
+{
+  "name": "server",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "better-sqlite3": "^11.9.1",
+    "drizzle-kit": "^0.31.0",
+    "drizzle-orm": "^0.42.0",
+    "hono": "^4.7.7",
+    "uuid": "^11.1.0",
+    "zod": "^3.24.3"
+  }
+}

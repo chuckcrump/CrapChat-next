@@ -8,9 +8,9 @@
   />
   <div
     class="flex justify-between group p-1.5 pl-2 rounded-xl hover:bg-[#242424] border-[1px] border-transparent hover:border-[#303030] hover:shadow-md overflow-hidden"
-    *ngFor="let chat of chats"
+    *ngFor="let chat of chats()"
   >
-    {{ chat.name }}
+    {{ chat.title }}
     <div
       class="flex gap-1 opacity-0 group-hover:opacity-100 slide transition-transform"
     >

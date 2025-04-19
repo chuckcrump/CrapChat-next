@@ -116,8 +116,9 @@ export class ChatComponent {
     });
     let res = "";
     for await (let part of response) {
-      this.ollamaRes.update((prev) => (prev += part.message.content));
       res += part.message.content;
+      const markedRes = await marked(res);
+      this.ollamaRes.set(markedRes);
       this.htmlOllamaRes.set(
         this.sanitizer.bypassSecurityTrustHtml(await marked(res))
       );
@@ -133,5 +134,6 @@ export class ChatComponent {
     ]);
     this.htmlOllamaRes.set("");
     this.ollamaRes.set("");
+    console.log(this.history());
   }
 }

@@ -1,5 +1,6 @@
 import { NgFor } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, signal } from "@angular/core";
+import { AfterViewInit } from "@angular/core";
 
 @Component({
   selector: "app-side-bar",
@@ -8,12 +9,12 @@ import { Component } from "@angular/core";
   styleUrl: "./side-bar.component.css",
 })
 export class SideBarComponent {
-  chats: any[] = [
-    { name: "JOe" },
-    { name: "JOe" },
-    { name: "JOe" },
-    { name: "JOe" },
-    { name: "JOe" },
-    { name: "JOe" },
-  ];
+  chats = signal<any[]>([]);
+
+  async ngAfterViewInit() {
+    const res = await fetch("http://localhost:8080/chats/list");
+    const conversations = await res.json();
+    console.log(conversations.convos);
+    this.chats.set(conversations.convos);
+  }
 }
