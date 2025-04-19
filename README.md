@@ -11,4 +11,4 @@ The *next* version of crapchat built with... Angular.
 ## Built with
 - Angular 19
 - Tailwindcss
-- Eventually hono
+- Hono
