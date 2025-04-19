@@ -1,1 +1,32 @@
-<app-html-preview html="{{ htmlContent }}" />
+<div class="flex flex-col w-screen h-screen items-center justify-center">
+  <h1
+    class="text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-purple-500"
+  >
+    Welcome to CrapChat
+  </h1>
+  <button
+    routerLink="/chat/new"
+    class="group flex mt-4 items-center justify-center rounded-xl text-white p-2 px-2.5 bg-[#242424] active:scale-95 transition-all ease-in-out"
+  >
+    <p>Go Chat</p>
+    <i class="ml-1 bi bi-arrow-right animate-bouncy"></i>
+  </button>
+</div>
+
+<style>
+  @keyframes bounce {
+    0%,
+    100% {
+      transform: translateX(0);
+      animation-timing-function: ease-in-out;
+    }
+    50% {
+      transform: translateX(4px);
+      animation-timing-function: ease-in-out;
+    }
+  }
+
+  .group:hover .animate-bouncy {
+    animation: bounce 1s infinite;
+  }
+</style>

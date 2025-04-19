@@ -1,13 +1,21 @@
 <div
-  class="flex flex-col fixed w-60 h-screen text-white bg-[#191919] p-2 gap-2"
+  class="flex flex-col items-center fixed w-60 h-screen text-white bg-[#191919] p-2 gap-2"
 >
   <input
     type="text"
     placeholder="Search..."
-    class="p-2 rounded-xl border-[1px] focus:border-[#303030] border-transparent outline-0 transition-all"
+    class="w-full p-2 rounded-xl border-[1px] focus:border-[#303030] border-transparent outline-0 transition-all"
   />
+  <button
+    class="p-2 rounded-xl hover:bg-[#242424] w-full border-[1px] border-transparent hover:border-[#303030]"
+  >
+    <i class="bi bi-plus-lg"></i>
+    New Chat
+  </button>
+  <div class="w-[95%] rounded-lg h-[2px] bg-[#353535]"></div>
   <div
-    class="flex justify-between group p-1.5 pl-2 rounded-xl hover:bg-[#242424] border-[1px] border-transparent hover:border-[#303030] hover:shadow-md overflow-hidden"
+    [routerLink]="'/chat/' + chat.id"
+    class="flex cursor-pointer w-full justify-between group p-1.5 pl-2 rounded-xl hover:bg-[#242424] border-[1px] border-transparent hover:border-[#303030] hover:shadow-md overflow-hidden"
     *ngFor="let chat of chats()"
   >
     {{ chat.title }}

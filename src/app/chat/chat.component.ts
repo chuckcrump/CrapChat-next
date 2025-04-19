@@ -22,7 +22,7 @@ type Message = {
   role: string;
   content: string;
   user: boolean;
-  html: SafeHtml;
+  html?: SafeHtml;
 };
 
 @Component({
@@ -36,19 +36,19 @@ export class ChatComponent {
 
   currentUuid: string = "";
   prompt: string = "";
-  history = signal<Message[]>([
-    {
-      role: "system",
-      content:
-        "when a user says something with value for later messages eg name, what they are doing, what they use put it at the top of the response in <memory> tags when a new memory is created try to not extend previous ones if user says I love cars then says they love ford split it up as just loves cars for one then the next would be loves fords don't add them for every chat only ones that hold significant value for future chats",
-      user: false,
-      html: "",
-    },
-  ]);
+  history = signal<Message[]>([]);
   ollamaRes = signal<string>("");
   htmlOllamaRes = signal<SafeHtml>("");
 
   constructor(private sanitizer: DomSanitizer, private route: ActivatedRoute) {}
+
+  async getMessages(uuid: string): Promise<Message[]> {
+    const response = await fetch(
+      "http://localhost:8080/chats/list-message/" + uuid
+    );
+    const data = await response.json();
+    return data;
+  }
 
   ngOnInit(): void {
     const renderer = new marked.Renderer();
@@ -93,9 +93,15 @@ export class ChatComponent {
       }
     });
 
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.subscribe(async (params) => {
       this.currentUuid = params.get("id") ?? "";
-      console.log("Chat: ", this.currentUuid);
+      const dbMessages = await this.getMessages(this.currentUuid);
+      this.history.set(
+        dbMessages.map((msg) => ({
+          ...msg,
+          html: this.sanitizer.bypassSecurityTrustHtml(msg.content),
+        }))
+      );
     });
   }
 
@@ -117,6 +123,7 @@ export class ChatComponent {
         block: "start",
       });
     });
+    console.log(this.history());
     const response = await this.ollama.chat({
       model: "gemma2:2b",
       messages: this.history(),
