@@ -36,7 +36,15 @@ export class ChatComponent {
 
   currentUuid: string = "";
   prompt: string = "";
-  history = signal<Message[]>([]);
+  history = signal<Message[]>([
+    {
+      role: "system",
+      content:
+        "when a user says something with value for later messages eg name, what they are doing, what they use put it at the top of the response in <memory> tags when a new memory is created try to not extend previous ones if user says I love cars then says they love ford split it up as just loves cars for one then the next would be loves fords don't add them for every chat only ones that hold significant value for future chats",
+      user: false,
+      html: "",
+    },
+  ]);
   ollamaRes = signal<string>("");
   htmlOllamaRes = signal<SafeHtml>("");
 
