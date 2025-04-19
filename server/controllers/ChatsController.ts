@@ -54,11 +54,41 @@ export async function createChat(c: Context) {
       });
     }
 
-    return c.text("Conversation created successfully", 200);
+    return c.json(
+      { message: "Conversation created successfully", uuid: conversationId },
+      200
+    );
   } catch (error) {
     return c.text(
       "Uh oh, there was an error creating your new conversation",
       500
     );
+  }
+}
+
+export async function update(c: Context) {
+  const { id } = c.req.param();
+  const { title, messages } = await c.req.json();
+
+  try {
+    await db
+      .update(conversations)
+      .set({ title })
+      .where(eq(conversations.id, id));
+
+    await db.delete(chats).where(eq(chats.convoId, id));
+
+    for (const message of messages) {
+      await db.insert(chats).values({
+        id: message.id,
+        convoId: id,
+        role: message.role,
+        content: message.content,
+        user: message.user,
+      });
+    }
+    return c.json({ success: true, error: null });
+  } catch (error) {
+    return c.json({ success: false, error: error });
   }
 }
