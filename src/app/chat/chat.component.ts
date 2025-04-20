@@ -17,6 +17,8 @@ import { marked } from "marked";
 import { markedHighlight } from "marked-highlight";
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
+import { HtmlPreviewComponent } from "../html-preview/html-preview.component";
+import { PreviewStateService } from "../../preview.service";
 
 type Message = {
   role: string;
@@ -27,7 +29,7 @@ type Message = {
 
 @Component({
   selector: "app-chat",
-  imports: [NgFor, NgIf, FormsModule, SideBarComponent],
+  imports: [NgFor, NgIf, FormsModule, SideBarComponent, HtmlPreviewComponent],
   templateUrl: "./chat.component.html",
   styleUrl: "./chat.component.css",
 })
@@ -39,8 +41,13 @@ export class ChatComponent {
   history = signal<Message[]>([]);
   ollamaRes = signal<string>("");
   htmlOllamaRes = signal<SafeHtml>("");
+  showPreview = signal<boolean>(false);
 
-  constructor(private sanitizer: DomSanitizer, private route: ActivatedRoute) {}
+  constructor(
+    private sanitizer: DomSanitizer,
+    private route: ActivatedRoute,
+    private previewState: PreviewStateService
+  ) {}
 
   async getMessages(uuid: string): Promise<Message[]> {
     const response = await fetch(
@@ -51,10 +58,20 @@ export class ChatComponent {
   }
 
   ngOnInit(): void {
+    marked.use(
+      markedHighlight({
+        highlight(code, lang) {
+          const language = hljs.getLanguage(lang) ? lang : "plaintext";
+          return hljs.highlight(code, { language }).value;
+        },
+      })
+    );
+
     const renderer = new marked.Renderer();
 
     renderer.code = ({ text, lang, escaped }) => {
       const language = lang ? `language-${lang}` : "";
+      console.log("escaped ", escaped);
       return `
         <div class="flex w-full flex-col bg-[#262626] shadow-md rounded-xl my-2 text-[15px]">
           <div class="flex p-1 px-1.5 border-2 border-transparent border-b-[#404040] justify-between">
@@ -69,15 +86,6 @@ export class ChatComponent {
       `;
     };
 
-    marked.use(
-      markedHighlight({
-        highlight(code, lang) {
-          const language = hljs.getLanguage(lang) ? lang : "plaintext";
-          return hljs.highlight(code, { language }).value;
-        },
-      })
-    );
-
     marked.setOptions({
       renderer: renderer,
     });
@@ -91,6 +99,15 @@ export class ChatComponent {
           navigator.clipboard.writeText(codeText);
         }
       }
+      if (event.target.matches("[data-code-preview]")) {
+        const container = event.target.closest("div.flex.w-full.flex-col");
+        const code = container ? container.querySelector("pre code") : null;
+        if (code) {
+          const codeText = code.innerText;
+          this.previewState.setShowPreview(true);
+          this.previewState.setHtmlToPreview(codeText);
+        }
+      }
     });
 
     this.route.paramMap.subscribe(async (params) => {
@@ -102,6 +119,10 @@ export class ChatComponent {
           html: this.sanitizer.bypassSecurityTrustHtml(msg.content),
         }))
       );
+    });
+
+    this.previewState.showPreview$.subscribe((status) => {
+      this.showPreview.set(status);
     });
   }
 

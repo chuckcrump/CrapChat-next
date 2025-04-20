@@ -1,11 +1,6 @@
-import {
-  Component,
-  ElementRef,
-  Input,
-  ViewChild,
-  AfterViewInit,
-} from "@angular/core";
+import { Component, ElementRef, Input, OnInit } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
+import { PreviewStateService } from "../../preview.service";
 
 @Component({
   selector: "app-html-preview",
@@ -14,14 +9,21 @@ import { DomSanitizer } from "@angular/platform-browser";
   styleUrl: "./html-preview.component.css",
 })
 export class HtmlPreviewComponent {
-  @Input() set html(val: string) {
-    this.safeContent = this.santizeIt(val);
-  }
-
   safeContent: string = "";
 
-  constructor(private sanitizer: DomSanitizer) {
-    console.log(this.safeContent);
+  constructor(
+    private sanitizer: DomSanitizer,
+    private previewState: PreviewStateService
+  ) {}
+
+  ngOnInit() {
+    this.previewState.htmlToPreview$.subscribe((html) => {
+      this.safeContent = this.santizeIt(html);
+    });
+  }
+
+  closePreview() {
+    this.previewState.setShowPreview(false);
   }
 
   private santizeIt(html: string) {
