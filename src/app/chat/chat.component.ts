@@ -146,7 +146,7 @@ export class ChatComponent {
     });
     console.log(this.history());
     const response = await this.ollama.chat({
-      model: "gemma2:2b",
+      model: "gemma3:4b",
       messages: this.history(),
       stream: true,
     });

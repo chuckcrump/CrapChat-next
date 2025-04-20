@@ -11,11 +11,18 @@ export class PreviewStateService {
   private _htmlToPreview = new BehaviorSubject<string>("");
   htmlToPreview$ = this._htmlToPreview.asObservable();
 
+  private _currentModel = new BehaviorSubject<string>("");
+  currentModel$ = this._currentModel.asObservable();
+
   setShowPreview(status: boolean) {
     this._showPreview.next(status);
   }
 
   setHtmlToPreview(html: string) {
     this._htmlToPreview.next(html);
+  }
+
+  setCurrentModel(name: string) {
+    this._currentModel.next(name);
   }
 }
