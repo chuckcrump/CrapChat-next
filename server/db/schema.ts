@@ -18,4 +18,5 @@ export const chats = sqliteTable("messages", {
   role: text("role").notNull(),
   content: text("content"),
   user: integer("user", { mode: "boolean" }),
+  modelName: text("model_name"),
 });

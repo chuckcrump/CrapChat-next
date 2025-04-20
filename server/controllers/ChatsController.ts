@@ -14,6 +14,7 @@ type Message = {
   role: string;
   content: string;
   user: boolean;
+  modelName: string;
 };
 
 export function sayHi(c: Context) {
@@ -51,6 +52,7 @@ export async function createChat(c: Context) {
         role: message.role,
         content: message.content,
         user: message.user,
+        modelName: message.modelName,
       });
     }
 
@@ -59,15 +61,30 @@ export async function createChat(c: Context) {
       200
     );
   } catch (error) {
-    return c.text(
-      "Uh oh, there was an error creating your new conversation",
+    console.log(error);
+    return c.json(
+      {
+        message: "Uh oh, there was an error creating your new conversation",
+        error: error,
+      },
       500
     );
   }
 }
 
 export async function update(c: Context) {
-  const { id } = c.req.param();
+  const body = await c.req.json();
+  if (
+    !body ||
+    typeof body !== "object" ||
+    !body.title ||
+    !Array.isArray(body.messages)
+  ) {
+    console.log("bad request body", body);
+    return c.json({ success: false, error: "Invalid body" }, 400);
+  }
+
+  const { id } = await c.req.param();
   const { title, messages } = await c.req.json();
 
   try {
@@ -80,15 +97,32 @@ export async function update(c: Context) {
 
     for (const message of messages) {
       await db.insert(chats).values({
-        id: message.id,
+        //id: message.id,
         convoId: id,
         role: message.role,
         content: message.content,
         user: message.user,
+        modelName: message.modelName,
       });
     }
+    console.log("big success");
     return c.json({ success: true, error: null });
   } catch (error) {
+    console.log("big error ", error);
     return c.json({ success: false, error: error });
+  }
+}
+
+export async function removeConvo(c: Context) {
+  const { id } = await c.req.param();
+
+  try {
+    await db.delete(conversations).where(eq(conversations.id, id));
+    return c.json({ message: "Deleted conversation " + id });
+  } catch (error) {
+    return c.json({
+      message: "failed to remove conversation " + id,
+      error: error,
+    });
   }
 }

@@ -45,7 +45,7 @@
               <p
                 class="text-sm text-gray-500 dark:text-gray-400 mb-1 font-medium"
               >
-                {{ chat.role }}
+                {{ chat.modelName }}
               </p>
               <div [innerHTML]="chat.html"></div>
             </div>
@@ -58,7 +58,7 @@
             <p
               class="text-sm text-gray-500 dark:text-gray-400 mb-1 font-medium"
             >
-              assistant
+              {{ model() }}
             </p>
             <p [innerHTML]="htmlOllamaRes()"></p>
           </div>

@@ -8,5 +8,6 @@ chatRoutes.post("/create", chatControllers.createChat);
 chatRoutes.get("/list", chatControllers.listConvos);
 chatRoutes.get("/list-message/:id", chatControllers.getMessages);
 chatRoutes.put("/update/:id", chatControllers.update);
+chatRoutes.delete("/remove/:id", chatControllers.removeConvo);
 
 export default chatRoutes;

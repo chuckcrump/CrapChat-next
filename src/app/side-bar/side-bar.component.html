@@ -9,6 +9,7 @@
   <app-model-picker class="w-full" />
 
   <button
+    (click)="createChat()"
     class="text-left p-2 rounded-xl hover:bg-[#242424] w-full border-[1px] border-transparent hover:border-[#303030]"
   >
     <i class="bi bi-plus-lg"></i>
@@ -28,6 +29,7 @@
         class="flex items-center justify-center hover:bg-[#303030] rounded-lg h-8 w-8 bi bi-pencil-square"
       ></i>
       <i
+        (click)="removeChat(chat.id)"
         class="flex items-center justify-center hover:bg-red-500 rounded-lg h-8 w-8 bi bi-trash-fill"
       ></i>
     </div>

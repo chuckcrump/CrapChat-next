@@ -24,6 +24,7 @@ type Message = {
   role: string;
   content: string;
   user: boolean;
+  modelName: string;
   html?: SafeHtml;
 };
 
@@ -56,6 +57,23 @@ export class ChatComponent {
     );
     const data = await response.json();
     return data;
+  }
+
+  async updateChat(uuid: string): Promise<string> {
+    console.log(this.history());
+    const res = await fetch("http://localhost:8080/chats/update/" + uuid, {
+      method: "PUT",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({
+        title: "Fixing my joe",
+        messages: this.history(),
+      }),
+    });
+    if (res.ok) {
+      return await res.text();
+    } else {
+      throw new Error("Falied to update chat " + uuid);
+    }
   }
 
   ngOnInit(): void {
@@ -140,7 +158,13 @@ export class ChatComponent {
     if (!this.prompt.trim()) return;
     this.history.update((prev) => [
       ...prev,
-      { role: "user", content: this.prompt, user: true, html: "" },
+      {
+        role: "user",
+        content: this.prompt,
+        user: true,
+        modelName: "",
+        html: "",
+      },
     ]);
     this.prompt = "";
     setTimeout(() => {
@@ -170,11 +194,13 @@ export class ChatComponent {
         role: "assistant",
         content: this.ollamaRes(),
         user: false,
+        modelName: this.model(),
         html: this.htmlOllamaRes(),
       },
     ]);
     this.htmlOllamaRes.set("");
     this.ollamaRes.set("");
+    await this.updateChat(this.currentUuid);
     console.log(this.history());
   }
 }
