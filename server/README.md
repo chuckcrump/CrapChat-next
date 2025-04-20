@@ -1,4 +1,4 @@
 # CrapChat Backend
 
 > [!Warning]
-> This backend is bun native as it uses bun:sqlite
+> This backend is bun native as it uses bun:sqlite and bun.serve
