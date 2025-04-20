@@ -42,6 +42,7 @@ export class ChatComponent {
   ollamaRes = signal<string>("");
   htmlOllamaRes = signal<SafeHtml>("");
   showPreview = signal<boolean>(false);
+  model = signal<string>("");
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -119,10 +120,14 @@ export class ChatComponent {
           html: this.sanitizer.bypassSecurityTrustHtml(msg.content),
         }))
       );
+      console.log(this.history());
     });
 
     this.previewState.showPreview$.subscribe((status) => {
       this.showPreview.set(status);
+    });
+    this.previewState.currentModel$.subscribe((model) => {
+      this.model.set(model);
     });
   }
 
@@ -146,7 +151,7 @@ export class ChatComponent {
     });
     console.log(this.history());
     const response = await this.ollama.chat({
-      model: "gemma3:4b",
+      model: this.model(),
       messages: this.history(),
       stream: true,
     });
